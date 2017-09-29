@@ -34,6 +34,14 @@ void setup()
   Serial.begin(115200);
 }
 
+int checkPulse(){
+  digitalWrite(TRIGGER_PIN0, HIGH);
+        delayMicroseconds(10);
+        digitalWrite(TRIGGER_PIN0, LOW);
+        duration = pulseIn(ECHO_PIN0, HIGH);
+        distance = duration * 0.034 / 2;
+        return distance;
+}
 void runMotors(int taskType, int angle) {
   //taskType defines to stop or go when we sense something in front of us, angle is the turn, "0" for straight
   //we can't go backwards, but retreating is for pussies and the French
@@ -47,12 +55,8 @@ void runMotors(int taskType, int angle) {
   if (taskType == 0 ) {
     //---go forward when there is nothing in front of usfor(int motorSpeed = 0; motorSpeed <= 255; ++motorSpeed)
     while (true) {
-      digitalWrite(TRIGGER_PIN0, HIGH);
-      delayMicroseconds(10);
-      digitalWrite(TRIGGER_PIN0, LOW);
-      duration = pulseIn(ECHO_PIN0, HIGH);
-      distance = duration * 0.034 / 2;
-      if (distance > 100) { //i have no clue what units this is, change the 100 to whatever we decide on
+  
+      if (checkPulse > 100) { //i have no clue what units this is, change the 100 to whatever we decide on
         analogWrite(CONTROL0_PIN, 100);
         analogWrite(CONTROL1_PIN, 100);
         delay(100);
@@ -61,11 +65,10 @@ void runMotors(int taskType, int angle) {
 
       } else {
         runMotors(2, 30);
-        digitalWrite(TRIGGER_PIN0, HIGH);
-        delayMicroseconds(10);
-        digitalWrite(TRIGGER_PIN0, LOW);
-        duration = pulseIn(ECHO_PIN0, HIGH);
-        distance = duration * 0.034 / 2;
+        
+        if(checkPulse<100){
+          runMotors(3, (2*angle));
+        }else{return;}
       }
     }
 
