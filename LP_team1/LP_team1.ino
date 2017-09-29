@@ -1,9 +1,5 @@
-int inputSensorF = 0;
-int inputSensorB = 0;
-bool motor0;
-bool motor1;
+
 bool runFlag=true;
-byte MUX_decider = B00;
 int duration, distance = 0;
 #include <NewPing.h>
 #define MAX_DISTANCE 200
@@ -54,7 +50,7 @@ void runMotors(int taskType, int angle) {
      3=turn left with a certain angle
   */
   if (taskType == 0 ) {
-    //---go forward when there is nothing in front of usfor(int motorSpeed = 0; motorSpeed <= 255; ++motorSpeed)
+    //if there is nothing in front, goes forward, then checks again, if something is in front of it, tries turning right, then left and keeps going forward
     while (runFlag) {
 
       if (checkPulse > 100) { //i have no clue what units this is, change the 100 to whatever we decide on
@@ -76,6 +72,7 @@ void runMotors(int taskType, int angle) {
     }
 
   } else if (taskType == 1) {
+        //if there is something in front, goes forward, then checks again, if nothing is in front of it, tries turning right, then left until it finds a target
      while (runFlag) {
 
       if (checkPulse < 100) { //i have no clue what units this is, change the 100 to whatever we decide on
