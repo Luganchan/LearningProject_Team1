@@ -32,18 +32,6 @@ void setup()
   pinMode(INPUT_SWITCH1, INPUT);
   Serial.begin(115200);
 }
-void loop()
-{
-  
-  digitalWrite(MOTOR_1A_PIN, LOW);
-  digitalWrite(MOTOR_2A_PIN, HIGH);
-  digitalWrite(MOTOR_1B_PIN, LOW);
-  digitalWrite(MOTOR_2B_PIN, HIGH);
-
-  
-}
-
-
 
 
 void task1(){
@@ -53,7 +41,20 @@ void task2(){
 }
 
 void task3(){
-  }
+}
 
 
+void loop()
+{
+if ((digitalRead(INPUT_SWITCH0)==HIGH)||(digitalRead(INPUT_SWITCH1)==LOW)){
+  task1();
+} else if ((digitalRead(INPUT_SWITCH0)==LOW)||(digitalRead(INPUT_SWITCH1)==HIGH)){
+  task2();
+  
+}else if ((digitalRead(INPUT_SWITCH0)==HIGH)||(digitalRead(INPUT_SWITCH1)==HIGH)){
+  task3();
+} else;
+
+
+}
 
