@@ -9,12 +9,15 @@ byte MUX_decider = B00;
 #define ECHO_PIN1    2
 #define TRIGGER_PIN2 3
 #define ECHO_PIN2    4
-#define CONTROL1_PIN 5
+#define CONTROL0_PIN 5
 #define MOTOR_1A_PIN 6
 #define MOTOR_2A_PIN 7
-#define CONTROL2_PIN 8
+#define CONTROL1_PIN 8
 #define MOTOR_1B_PIN 9
 #define MOTOR_2B_PIN 10
+#define INPUT_SWITCH0 11
+#define INPUT_SWITCH1 12
+
 NewPing sonar1(TRIGGER_PIN1, ECHO_PIN1, MAX_DISTANCE);
 NewPing sonar2(TRIGGER_PIN2, ECHO_PIN2, MAX_DISTANCE);
 void setup()
@@ -22,35 +25,22 @@ void setup()
   pinMode(CONTROL1_PIN, OUTPUT);
   pinMode(MOTOR_1A_PIN, OUTPUT);
   pinMode(MOTOR_2A_PIN, OUTPUT);
-  pinMode(CONTROL2_PIN, OUTPUT);
+  pinMode(CONTROL0_PIN, OUTPUT);
   pinMode(MOTOR_1B_PIN, OUTPUT);
   pinMode(MOTOR_2B_PIN, OUTPUT);
+  pinMode(INPUT_SWITCH0, INPUT);
+  pinMode(INPUT_SWITCH1, INPUT);
   Serial.begin(115200);
 }
 void loop()
 {
-  delay(50);
-  Serial.print("Ping: ");
-  Serial.print(sonar1.ping_cm());
-  Serial.println("cm");
   
   digitalWrite(MOTOR_1A_PIN, LOW);
   digitalWrite(MOTOR_2A_PIN, HIGH);
   digitalWrite(MOTOR_1B_PIN, LOW);
   digitalWrite(MOTOR_2B_PIN, HIGH);
-  for(int motorSpeed = 0; motorSpeed <= 255; ++motorSpeed)
-  {
-    analogWrite(CONTROL1_PIN, motorSpeed);
-    analogWrite(CONTROL2_PIN, motorSpeed);
-    delay(15);
-  }
+
   
-  for(int motorSpeed = 255; motorSpeed >=0; --motorSpeed)
-  {
-    analogWrite(CONTROL1_PIN, motorSpeed);
-    analogWrite(CONTROL2_PIN, motorSpeed);
-    delay(15);
-  }
 }
 
 
@@ -65,5 +55,5 @@ void task2(){
 void task3(){
   }
 
-}
+
 
