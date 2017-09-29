@@ -2,6 +2,7 @@ int inputSensorF = 0;
 int inputSensorB = 0;
 bool motor0;
 bool motor1;
+bool runFlag=true;
 byte MUX_decider = B00;
 int duration, distance = 0;
 #include <NewPing.h>
@@ -34,13 +35,13 @@ void setup()
   Serial.begin(115200);
 }
 
-int checkPulse(){
+int checkPulse() {
   digitalWrite(TRIGGER_PIN0, HIGH);
-        delayMicroseconds(10);
-        digitalWrite(TRIGGER_PIN0, LOW);
-        duration = pulseIn(ECHO_PIN0, HIGH);
-        distance = duration * 0.034 / 2;
-        return distance;
+  delayMicroseconds(10);
+  digitalWrite(TRIGGER_PIN0, LOW);
+  duration = pulseIn(ECHO_PIN0, HIGH);
+  distance = duration * 0.034 / 2;
+  return distance;
 }
 void runMotors(int taskType, int angle) {
   //taskType defines to stop or go when we sense something in front of us, angle is the turn, "0" for straight
@@ -54,8 +55,8 @@ void runMotors(int taskType, int angle) {
   */
   if (taskType == 0 ) {
     //---go forward when there is nothing in front of usfor(int motorSpeed = 0; motorSpeed <= 255; ++motorSpeed)
-    while (true) {
-  
+    while (runFlag) {
+
       if (checkPulse > 100) { //i have no clue what units this is, change the 100 to whatever we decide on
         analogWrite(CONTROL0_PIN, 100);
         analogWrite(CONTROL1_PIN, 100);
@@ -65,15 +66,35 @@ void runMotors(int taskType, int angle) {
 
       } else {
         runMotors(2, 30);
-        
-        if(checkPulse<100){
-          runMotors(3, (2*angle));
-        }else{return;}
+
+        if (checkPulse < 100) {
+          runMotors(3, (2 * angle));
+        } else {
+          return;
+        }
       }
     }
 
   } else if (taskType == 1) {
-    //TODO
+     while (runFlag) {
+
+      if (checkPulse < 100) { //i have no clue what units this is, change the 100 to whatever we decide on
+        analogWrite(CONTROL0_PIN, 100);
+        analogWrite(CONTROL1_PIN, 100);
+        delay(100);
+        analogWrite(CONTROL0_PIN, 0);
+        analogWrite(CONTROL1_PIN, 0);
+
+      } else {
+        runMotors(2, 30);
+
+        if (checkPulse < 100) {
+          runMotors(3, (2 * angle));
+        } else {
+          return;
+        }
+      }
+    }
   } else if (taskType == 2) {
     analogWrite(CONTROL1_PIN, 100);
     delay(angle);
@@ -89,10 +110,12 @@ void task1() {
 }
 
 void task2() {
+  runMotors(0,0);
 }
 
 
 void task3() {
+   runMotors(1,0);
 }
 
 
